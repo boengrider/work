@@ -1,7 +1,4 @@
 Option Explicit
-'#######################################
-'############ Constants ################
-'####################################### 
 ' Excel worksheet 'OUT' column names
 Const DOC_TYPE = "A"  
 Const BREAK_DOWN_PROD_LINE = "B"
@@ -86,7 +83,6 @@ Const S_NON_VAT_CHARGEABLE = "NonVATChargeable" ' <----> NON_VAT_CHARGEABLE
 Const S_BRAND = "Brand" ' <----------------------------> BREAK_DOWN_PROD_LINE
 Const S_REGISTRATION = "RegNo" ' <---------------------> REGISTRATION
 Const S_DOCTYPE = "DocType" ' <------------------------> DOCTYPE
-
 ' Other constants
 Const outdir = "CZ02_VASI" ' Output directory
 Const spsourcedir = "CZ02_VASI/SOURCE" ' Sharepoint online source directory
@@ -94,9 +90,7 @@ Const spprocesseddir = "CZ02_VASI/SOURCE/PROCESSED" ' Sharepoint online processe
 Const attachmentdir = "CZ02_VASI/CZ02_VASI_PDF" ' Sharepoint online attachments directory
 Const CONTRACTS = "CZ02_VASI_Contracts.xlsx"
 Const SP_LIST_NAME = "CZ02_VASI_Portal"
-'###########################################
-'############## Variables ##################
-'###########################################
+'vars
 Dim s__pdf, s__invoice, s__requestnumber, s__customername, s__yearweek, s__vinserial, s__regno, s__dealerid, s__docdate
 Dim s__contract, s__deftempl, s__currency, s__totalamount, s__labour, s__traveltime, s__brandedparts, s__nonbrandedparts
 Dim s__envsundry, s__dealercallout, s__ccp, s__towingcost, s__servicevan, s__othercost, s__thirdpartywork, s__subtotal
@@ -187,8 +181,7 @@ dictDealerLoc.Add "321708","KLE"
 '#########################################################################################################
 
 '*******************************************************************
-' Pre-processing tasks
-' Creating folder structure
+' Initialize sharepoint class
 '*******************************************************************
 oSP.Init "https://volvogroup.sharepoint.com/sites/unit-vasi","volvogroup.sharepoint.com","40784cc3-ba68-45d0-9891-f3dfa8f04d15","cDES2gLLi%2BBRI/FcUizAyZuGQFQ5p%2B6rrknc3kMBWmE="
 ' Check if Sharepoint folder exists
@@ -230,8 +223,8 @@ strSiteFullUrl = "https://" & oSP.GetSiteDomain
 debug.WriteLine "Searching " & oSP.GetSiteURL & attachmentdir
 oSP.GetFiles attachmentdir,dictFilesInAttachmentDir ' Function returns dictionary of all files in the specified directory
 debug.WriteLine "Searching " & oSP.GetSiteURL & spsourcedir
-oSP.GetFiles spsourcedir,dictFilesInSourceDir ' Function returns dictionary of all the files in the specified directory so that we can process each file
-oRX.Pattern = "[0-9]{4}[W|M][0-9]{2}"
+oSP.GetFiles spsourcedir,dictFilesInSourceDir ' Function returns dictionary of all files in the specified directory
+oRX.Pattern = "[0-9]{4}[W|M][0-9]{2}"         ' Process both, weekly and monthly reports
 For Each file In dictFilesInSourceDir.Keys
 	If oFSO.FileExists(outpath & file) Then
 		oFSO.DeleteFile outpath & file
@@ -246,7 +239,6 @@ If Not oFSO.FileExists(outpath & CONTRACTS) Then
 End If 
 '*******************************************************************
 ' Process downloaded source files (excel)
-' Open Contracts file (excel)
 '*******************************************************************
 Set oWBC = oEXCEL.Workbooks.Open(outpath & CONTRACTS)
 Set oWSC = oWBC.Worksheets("Report 1")
@@ -271,7 +263,6 @@ For Each file In dictFilesInSourceDir.Keys
 				s__documentoutnumber = oWS.Range(DOCUMENT_OUT_NUMBER & row).Value
 				s__requestnumber = oWS.Range(REQUEST_NUMBER & row).Value
 				strDate = Month(CDate(oWS.Range(DOC_DATE & row).Value)) & "." & Day(CDate(oWS.Range(DOC_DATE & row).Value)) & "." & Year(CDate(oWS.Range(DOC_DATE & row).Value))
-				'strBreakDate = Month(CDate(oWS.Range(BREAKDOWN_DATE & row).Value)) & "." & Day(CDate(oWS.Range(BREAKDOWN_DATE & row).Value)) & "." & Year(CDate(oWS.Range(BREAKDOWN_DATE & row).Value))
 				strBreakDate = oWS.Range(BREAKDOWN_DATE & row).Value
 				
 				vinnum = oWS.Range(VIN_SERIAL & row).Value ' Save the vin number
@@ -350,9 +341,9 @@ For Each file In dictFilesInSourceDir.Keys
 			End If 
 			row = row + 1
 		Loop
-		'*******************
-		'Process CCP sheet
-		'*******************
+		'********************
+		'Process CC(C)P sheet
+		'********************
 		debug.WriteLine "Processing workbook " & oWB.Name & " sheet " & oWSCCCP.Name
 		numRows = oWSCCCP.Usedrange.Rows.count
 		oWSCCCP.UsedRange.Sort oEXCEL.Range("E2") ' Sort asc
@@ -396,7 +387,10 @@ For Each file In dictFilesInSourceDir.Keys
 		oWB.Close False
 	End If 
 Next
-'**************** Move from SOURCE to PROCESSED ******************************
+'******************************
+'Move from SOURCE to PROCESSED
+' cleanup
+'******************************
 For Each file In dictFilesInSourceDir.Keys
 	If Not file = CONTRACTS Then 
 		debug.WriteLine "Moving file " & file & " from " & spsourcedir & " to " & spprocesseddir
@@ -417,7 +411,6 @@ If oFSO.FileExists(outpath & contracts) Then
 	debug.WriteLine "Deleting file " & outpath & contracts
 	oFSO.DeleteFile outpath & contracts
 End If 
-
 
 WScript.Quit
 '#########################################################################################################
@@ -929,9 +922,3 @@ Class SP
 	End Property 
 	
 End Class 
-
-
-
-Function ExcelOn_Open(bCancel)
-	debug.WriteLine "BeforeClose event fired"
-End Function 
