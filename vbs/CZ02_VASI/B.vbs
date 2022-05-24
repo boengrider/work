@@ -102,7 +102,7 @@ End If
 '@Load configuration subtree based on country
 oXML.load config
 Set oXML = oXML.selectNodes("//Country[@name=""" & country & """]").item(0)
-debug.WriteLine oXML.firstChild.baseName
+
 
 
 
