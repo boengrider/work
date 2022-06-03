@@ -1,5 +1,6 @@
 Option Explicit
-Const UNIT = "unit-vasi"
+Const UNIT_SOURCE = "unit-vasi"
+Const UNIT_DEST = "unit-rc-sk-bs-it"
 Const PROJECT = "MAKE4ME"
 Const CONFIG_PATH = "C:\!AUTO\CONFIGURATION\MAKE4ME.conf"
 Const HOST = "https://volvogroup.sharepoint.com/sites/unit-vasi"
@@ -15,10 +16,13 @@ oMailer.AddAdmin = "tomas.ac@volvo.com;tomas.chudik@volvo.com"
 Dim config, country
 config = Null
 country = Null
-Dim credfile, spUser, spSecret, spSite
-spSite = Null
-spUser = Null
-spSecret = Null
+Dim credfile, spUserSource, spSecretSource, spSiteSource, spUserDestination, spSecretDestination, spSiteDestination
+spSiteSource = Null
+spUserSource = Null
+spSecretSource = Null
+spSiteDestination = Null
+spUserDestination = Null
+spSecretDestination = Null
 credfile = Null
 Dim retval, arg, token, xdigestvalue
 Dim buffer,entryNode,itemNode,i
@@ -82,17 +86,20 @@ If IsNull(credfile) Then
 End If
 '@Load credentials file
 oXMLCONF.load credfile
-spUser = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT & """]/username").text
-spSecret = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT & """]/password").text
-spSite = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT & """]/host").text
+spUserSource = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_SOURCE & """]/username").text
+spSecretSource = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_SOURCE & """]/password").text
+spSiteSource = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_SOURCE & """]/host").text
+spUserDestination = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_DEST & """]/username").text
+spSecretDestination = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_DEST & """]/password").text
+spSiteDestination = oXMLCONF.selectSingleNode("//service[@name=""" & UNIT_DEST & """]/host").text
 '@Can't continue w/o either user,secret or site
-If IsNull(spUser) Or IsNull(spSecret) Or IsNull(spSite) Then
+If IsNull(spUserSource) Or IsNull(spSecretSource) Or IsNull(spSiteSource) Or IsNull(spUserDestination) Or IsNull(spSecretDestination) Or IsNull(spSiteDestination) Then
 	'Notify admin
 	debug.WriteLine "Missing info"
 	WScript.Quit
 End If 
 '@Initiliaze SPLite
-retval = oSPL.SharePointLite(spSite,spUser,spSecret,False)
+retval = oSPL.SharePointLite(spSiteSource,spUserSource,spSecretSource,False)
 If retval <> 0 Then
 	'Notify admin
 	debug.WriteLine oSPL.LastErrorNumber
@@ -124,33 +131,46 @@ If oXML.selectNodes("//entry").length = 0 Then
 	'Nothing to process
 	'Exit
 	WScript.Quit
-End If 
+End If
+'*********************************************
 '@Consume every //entry node in the collection
+'@and write to the file 
+'*********************************************
 For Each entryNode In oXML.selectNodes("//entry")
 	oMyItems.Consume entryNode, oXMLCONF
 Next
 
+If oMyItems.CCPCount + oMyItems.OUTCount > 0 Then
+	Dim f : Set f = oFSO.OpenTextFile(oXMLCONF.selectSingleNode("//WorkingDirectory").text & "CZ02_A7_AP-SK01-D_VASI_2d_" & oDF.ToYearMonthDayHourMinuteWithZeros(Date,Time) & ".csv",2,True)
+	Dim vasiItems : Set vasiItems = oMyItems.Items
+	For Each itemNode In vasiItems.Keys
+		f.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
+		debug.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
+	Next
+	f.Close
+End If 
+'*******************************************
+'@Upload to the sharepoint library
+'*******************************************
+'reuse instance
+retval = oSPL.SharePointLite(spSiteDestination,spUserDestination,spSecretDestination,False)
+If retval <> 0 Then
+	'Notify admin
+	debug.WriteLine oSPL.LastErrorNumber
+	debug.WriteLine oSPL.LastErrorSource
+	debug.WriteLine oSPL.LastErrorDesc
+	WScript.Quit
+Else 'Initialization OK
+	token = oSPL.AccessToken
+	xdigestvalue = oSPL.XDigest
+End If
 
-'TEMP. Remove later
-Dim f : Set f = oFSO.OpenTextFile("C:\!AUTO\CZ02_VASI\out.txt",2,True)
-'TEMP. Remove later
 
-'@Write out
-Dim vasiItems : Set vasiItems = oMyItems.Items
-For Each itemNode In vasiItems.Keys
-	f.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
-	debug.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
-Next 
-f.Close
 '@Send message
-oMailer.SendMessage "Processed items: " & oMyItems.Count & vbCrLf & vbCrLf & "CCP: " & oMyItems.CCPCount & vbCrLf  _
-                  & "OUT: " & oMyItems.OUTCount & vbCrLf & "Other: " & oMyItems.Count - (oMyItems.CCPCount + oMyItems.OUTCount),"I",""
+'oMailer.SendMessage "Processed items: " & oMyItems.Count & vbCrLf & vbCrLf & "CCP: " & oMyItems.CCPCount & vbCrLf  _
+'                  & "OUT: " & oMyItems.OUTCount & vbCrLf & "Other: " & oMyItems.Count - (oMyItems.CCPCount + oMyItems.OUTCount),"I",""
                   
 
-
-'**********************************************************
-'@Load 'PostingAP' 'ready' items of type OUT from SP list *
-'**********************************************************
 Class MyItems
 	
 	Private listItems__
@@ -181,44 +201,54 @@ Class MyItems
 			Case "CCP"
 				
 				If Not listItems__.Exists(invoice__) Then
-					'Create a new instance of MyItem
 					listItems__.Add invoice__, New MyItem
 					ccpItems__ = ccpItems__ + 1
 				End If
-				 
-				'************
-				'*  Header  *
-				'************
+				
+				'*************************************
+				'Header line 
+				'************************************* 
 				'DocDate -> header
 				listItems__.Item(invoice__).HeaderDocDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
-				'DocDate -> line item
-				listItems__.Item(invoice__).LineItemDocDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
 				'PostingDate -> header
 				listItems__.Item(invoice__).HeaderPostingDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
-				'PostingDate -> line item
-				listItems__.Item(invoice__).LineItemDocDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
 				'Currency -> header
 				listItems__.Item(invoice__).HeaderCurrency = xmlConfigNode__.SelectSingleNode("//Currency").text
-				'Currency -> line item
-				listItems__.Item(invoice__).LineItemCurrency = xmlConfigNode__.SelectSingleNode("//Currency").text
 				'Reference -> header
 				listItems__.Item(invoice__).HeaderReference = invoice__
-				'Reference -> line items
-				listItems__.Item(invoice__).LineItemReference = invoice__
 				'Parma -> header
 				listItems__.Item(invoice__).HeaderParma = xmlConfigNode__.SelectSingleNode("//VendorParma").text
-				'GL -> line item
-				listItems__.Item(invoice__).LineItemGLAccount = xmlConfigNode__.SelectSingleNode("//CaseCCP/GL").text
 				'TotalAmount -> header
 				listItems__.Item(invoice__).HeaderTotalAmount = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:SubTotal").text
-				'TotalAmount -> line item
-				listItems__.Item(invoice__).LineItemTotalAmount = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:SubTotal").text
 				'TaxCode -> header
 				listItems__.Item(invoice__).HeaderTaxCode = xmlConfigNode__.SelectSingleNode("CaseCCP").SelectSingleNode("TaxCode").text
-				'TaxCode -> line item
-				listItems__.Item(invoice__).LineItemTaxCode = xmlConfigNode__.SelectSingleNode("CaseCCP").SelectSingleNode("TaxCode").text
 				'TaxAmount -> header
 				listItems__.Item(invoice__).HeaderTaxAmount = "0,00"
+				'AmountInLocCurrency -> header
+				listItems__.Item(invoice__).HeaderAmInLocCur = ""
+				'TradingPartner -> header
+				listItems__.Item(invoice__).HeaderTradingPartner = xmlConfigNode__.SelectSingleNode("//TradingPartner").text
+				'LineText -> header
+				listItems__.Item(invoice__).HeaderLineText = ""
+				'PaymentTerms -> header
+				listItems__.Item(invoice__).HeaderPaymentTerms = xmlConfigNode__.SelectSingleNode("//PaymentTerms").text
+				'*************************************
+				'GL Lines (must be in order)
+				'*************************************
+				'DocDate -> line item
+				listItems__.Item(invoice__).LineItemDocDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
+				'PostingDate -> line item
+				listItems__.Item(invoice__).LineItemDocDate = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:DocDate").text
+				'Currency -> line item
+				listItems__.Item(invoice__).LineItemCurrency = xmlConfigNode__.SelectSingleNode("//Currency").text
+				'Reference -> line items
+				listItems__.Item(invoice__).LineItemReference = invoice__
+				'GL -> line item
+				listItems__.Item(invoice__).LineItemGLAccount = xmlConfigNode__.SelectSingleNode("//CaseCCP/GL").text
+				'TotalAmount -> line item
+				listItems__.Item(invoice__).LineItemTotalAmount = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:SubTotal").text
+				'TaxCode -> line item
+				listItems__.Item(invoice__).LineItemTaxCode = xmlConfigNode__.SelectSingleNode("CaseCCP").SelectSingleNode("TaxCode").text
 				'TaxAmount -> line item
 				listItems__.Item(invoice__).LineItemTaxAmount = "0,00"
 				'CostCenter -> line item
@@ -227,24 +257,22 @@ Class MyItems
 				listItems__.Item(invoice__).LineItemProfitCenter = xmlConfigNode__.SelectSingleNode("CaseCCP").SelectSingleNode("PC").text
 				'Allocation -> line item
 				listItems__.Item(invoice__).LineItemAllocation = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:RequestNumber").text
-				'TradingPartner -> header
-				listItems__.Item(invoice__).HeaderTradingPartner = xmlConfigNode__.SelectSingleNode("//TradingPartner").text
 				'TradingPartner -> line item
-				listItems__.Item(invoice__).LineItemTradingPartner = xmlConfigNode__.SelectSingleNode("//TradingPartner").text
-				'AmountInLocCurrency
-				listItems__.Item(invoice__).HeaderAmInLocCur = "0,00"
+				listItems__.Item(invoice__).LineItemTradingPartner = ""
 				'AmountInLocCurrency -> line item
 				listItems__.Item(invoice__).LineItemAmInLocCur = xmlNode__.SelectSingleNode("content").SelectSingleNode("m:properties").SelectSingleNode("d:SubTotal").text
-				'LineText
-				listItems__.Item(invoice__).HeaderLineText = invoice__
-				'PaymentTerms
-				listItems__.Item(invoice__).HeaderPaymentTerms = xmlConfigNode__.SelectSingleNode("//PaymentTerms").text
 				
 				'Additonal properties
 				listItems__.Item(invoice__).ItemType = invoice__
 				
 			Case "OUT"
-				outItems__ = outItems__ + 1
+			
+				If Not listItems__.Exists(invoice__) Then
+					'Create a new instance of MyItem
+					listItems__.Add invoice__, New MyItem
+					outItems__ = outItems__ + 1
+				End If
+				
 			
 			Case Else
 				otherItems__ = otherItems__ + 1 
@@ -310,8 +338,9 @@ Class MyItem
 	
 	'Index 3 Reference
 	Public Property Let HeaderReference(r)
-		rx__.Pattern = "[0-9]{1,}"
-		outHeader__(3) = rx__.Execute(r)(0)
+'		rx__.Pattern = "[0-9]{1,}"
+'		outHeader__(3) = rx__.Execute(r)(0)
+		outHeader__(3) = r
 	End Property 
 	
 	'Index 4 Parma
@@ -376,8 +405,9 @@ Class MyItem
 	End Property
 	
 	Public Property Let LineItemReference(r)
-		rx__.Pattern = "[0-9]{1,}"
-		outBuffer__ = outBuffer__ & rx__.Execute(r)(0) & ";"
+'		rx__.Pattern = "[0-9]{1,}"
+'		outBuffer__ = outBuffer__ & rx__.Execute(r)(0) & ";"
+		outBuffer__ = outBuffer__ & r & ";"
 	End Property
 	
 	Public Property Let LineItemGLAccount(a)
@@ -386,9 +416,17 @@ Class MyItem
 		
 	Public Property Let LineItemTotalAmount(a)
 		If isInvoice__ Then
-			outBuffer__ = outBuffer__ & a & ";"
+			If InStr(a,",") > 0 Then
+				outBuffer__ = outBuffer__ & Replace(a,",","") & ";"
+			Else
+				outBuffer__ = outBuffer__ & a & "00;"
+			End If 
 		Else
-			outBuffer__ = outBuffer__ & a & "-;"
+			If InStr(a,",") > 0 Then
+				outBuffer__ = outBuffer__ & Replace(a,",","") & "-;"
+			Else
+				outBuffer__ = outBuffer__ & a & "00-;"
+			End If 
 		End If 
 	End Property 
 	
@@ -413,15 +451,23 @@ Class MyItem
 	End Property 
 	
 	Public Property Let LineItemTradingPartner(p)
-		outBuffer__ = outBuffer__ & p & ";;"
+		outBuffer__ = outBuffer__ & p & ";"
 	End Property 
 	
 	Public Property Let LineItemAmInLocCur(a)
 		If isInvoice__ Then
-			outBuffer__ = outBuffer__ & a & ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
+			If InStr(a,",") > 0 Then
+				outBuffer__ = outBuffer__ & Replace(a,",","") & ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
+			Else
+				outBuffer__ = outBuffer__ & a & "00;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
+			End If 
 		Else
-			outBuffer__ = outBuffer__ & a & "-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
-		End If
+			If InStr(a,",") > 0 Then
+				outBuffer__ = outBuffer__ & Replace(a,",","") & "-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
+			Else
+				outBuffer__ = outBuffer__ & a & "00-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf
+			End If 
+		End If 
 	End Property 
 	
 	
@@ -432,7 +478,7 @@ Class MyItem
 	'Returns header string
 	Public Property Get GetHeader
 		GetHeader = outHeader__(0) & ";" & outHeader__(1) & ";" & outHeader__(2) & ";" & outHeader__(3) _
-		          & ";;" & outHeader__(4) & ";;" & GetTotalAmount & ";" & outHeader__(6) & ";" & GetTotalAmount _
+		          & ";;" & outHeader__(4) & ";;" & GetTotalAmount & ";" & outHeader__(6) & ";0,00" _
 		          & ";;;;;;" & outHeader__(8) & ";;" & outHeader__(9) & ";;;;" & outHeader__(10) & ";;" _
 		          & outHeader__(11) & ";" & outHeader__(12) & ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" & vbCrLf 
 	End Property 
@@ -448,10 +494,20 @@ Class MyItem
 	End Property 
 	
 	Private Property Get GetTotalAmount
+		Dim tmp : tmp = Round(outHeader__(5),2)
+		
 		If isInvoice__ Then
-			GetTotalAmount = CStr(outHeader__(5)) & "-"
+			If InStr(CStr(tmp),",") > 0 Then
+				GetTotalAmount = Replace(tmp,",","") & "-"
+			Else
+				GetTotalAmount = tmp & "00-"
+			End If 
 		Else
-			GetTotalAmount = CStr(outHeader__(5))
+			If InStr(CStr(tmp),",") > 0 Then
+				GetTotalAmount = Replace(tmp,",","")
+			Else
+				GetTotalAmount = tmp & "00"
+			End If 
 		End If 
 	End Property 
 	
@@ -730,6 +786,11 @@ Class SharePointLite
 		
 		GetSecurityToken = 0 	
 	End Function 
+	
+	'Properties
+	Public Property Get SiteUrl
+		SiteUrl = strSiteURL
+	End Property 
 	
 	Public Property Get XDigest
 		XDigest = strFormDigestValue
