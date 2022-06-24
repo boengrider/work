@@ -28,11 +28,11 @@ Placed by MS flow to the sharepoint source library for script A to discover and 
 
 ### 2. Script A processes incoming reports
 All monthly and weekly reports discovered by Script A in the SOURCE library are processed<br>
-Some data transormation occurs at this stage, minly the contract coverage determination plus<br>
+Some data transormation occurs at this stage, mainly the contract coverage determination plus<br>
 some additional data clensing in order to make data more consistent over time since reports<br>
-arriving sometimes differ in presentation<br><br>
-Finally data is placed in the sharepoint list which acts as a datasource for powerapps that presents<br>
-data to users
+arriving sometimes differ in presentation quality<br><br>
+Finally data is placed in the sharepoint list which is a datasource for frontend (powerapss) app<br>
+that presents data to users
 
 <picture>
   <img alt="Sharepoint source library" src="images/sp_source_portal1.PNG">
