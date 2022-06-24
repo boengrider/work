@@ -1,6 +1,6 @@
 ## CZ02_VASI
 
-<img src="images/algorithm.png">
+<img src="images/algorithm(1).png">
 
 ### There are 3 scripts in this project
   - Script A (Data processing)
