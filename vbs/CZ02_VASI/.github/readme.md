@@ -1,5 +1,6 @@
 ## CZ02_VASI
 
+![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
 ### There are 3 scripts in this project
   - Script A (Data processing)
   - Script B (CSV maker)
