@@ -1,6 +1,6 @@
 ## Project CZ02_VASI
-Series of scripts for determining the contract coverage and presenting data in consistent way to the sharepoint users
-In this project we also make use of powerapps as a frontend to the users
+Series of scripts for determining the contract coverage and presenting data in consistent way to the sharepoint users.<br>
+In this project we also make use of powerapps as a frontend to the users.<br>
 Based on user final decision, data is further processed and script(s) finish by uploading .CSV file(s) to SAP
 
 ### There are 3 scripts in this project
