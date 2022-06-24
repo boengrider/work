@@ -26,7 +26,7 @@ Placed by MS flow to the sharepoint source library for script A to discover and 
 </picture>
 
 
-### 2. Script A processes reports
+### 2. Script A processes incoming reports
 All monthly and weekly reports discovered by Script A in the SOURCE library are processed<br>
 Some data transormation occurs at this stage, minly the contract coverage determination plus<br>
 some additional data clensing in order to make data more consistent over time since reports<br>
@@ -37,6 +37,9 @@ data to users
 <picture>
   <img alt="Sharepoint source library" src="images/sp_source_portal1.PNG">
 </picture>
+<br>
+<picture>
+  <img alt="Sharepoint source library" src="images/sp_source_portal2.PNG">
+</picture>
 
-![Alt text](.github/images/sp_source_portal1.PNG?raw=true "Title")
-
+![image](https://user-images.githubusercontent.com/17108964/175505226-45133ab4-4a98-4c6c-9d82-1b2650db748d.png)
