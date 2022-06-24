@@ -1,6 +1,6 @@
 ## CZ02_VASI
 
-[!Image(https://github.com/boengrider/work/images/algorithm.png)
+<img src="images/algorithm.png">
 
 ### There are 3 scripts in this project
   - Script A (Data processing)
