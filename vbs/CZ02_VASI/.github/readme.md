@@ -1,15 +1,27 @@
-## CZ02_VASI
-
-<img src="images/algorithm (1).png" alt="How it works">
+## Project CZ02_VASI
 
 ### There are 3 scripts in this project
-  - Script A (Data processing)
-  - Script B (CSV maker)
-  - Script C (SAP uploader)
+| Script | Description
+|---|---|
+| Script A | Input data validation + upload to sharepoint |
+| Script B | Data transormation based on configuration (.CSV creation) |
+| Script C | Upload of .CSV to SAP (SM35). Verification and logging |
  
- ```diff
-+ Data source 
-Periodic weekly and monthly reports (xlsx) sent via email. Placed in the sharepoint library by flow
+  
+ ----------------------------------------------------------------------------
+#### Workflow
+ 
+ <picture>
+  <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="images/algorithm (1).png">
+</picture>
+
+
+1) Periodic weekly and monthly reports (xlsx) sent via email. Placed in the sharepoint library by flow
+
+<picture>
+  <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="images/shareponit_source_library#2.PNG">
+  
+</picture>
 - Workflow
 1. MS Flow
   2. Script A
