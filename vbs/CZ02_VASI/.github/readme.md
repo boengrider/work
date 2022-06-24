@@ -37,5 +37,6 @@ data to users
 <picture>
   <img alt="Sharepoint source library" src="images/sp_source_portal1.PNG">
 </picture>
-![Image][(https://github.com/boengrider/work/tree/main/vbs/CZ02_VASI/.github/images)]
+
+![Alt text](.github/images/sp_source_portal1.PNG?raw=true "Title")
 
