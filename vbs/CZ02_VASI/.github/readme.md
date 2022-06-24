@@ -1,6 +1,6 @@
 ## CZ02_VASI
 
-![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
+![This is an image](https://github.com/boengrider/work/tree/main/vbs/CZ02_VASI/.github/.res/algorithm.png)
 ### There are 3 scripts in this project
   - Script A (Data processing)
   - Script B (CSV maker)
