@@ -12,6 +12,8 @@ Based on user final decision, data is further processed and script(s) finish by 
  
   
  ---
+ ---
+ 
  ### Workflow
  <picture>
   <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="images/algorithm (1).png">
@@ -25,6 +27,7 @@ Placed by MS flow to the sharepoint source library for script A to discover and 
   <img alt="Sharepoint source library" src="images/sp_source_library.PNG">
 </picture>
 
+---
 
 ### 2. Script A processes incoming reports
 All monthly and weekly reports discovered by Script A in the SOURCE library are processed<br>
@@ -39,9 +42,13 @@ that presents data to users
 ![image](https://github.com/boengrider/work/blob/1db9ff043a5e7f420efdaddf4ece15515e22b22d/vbs/CZ02_VASI/.github/images/sp_source_portal1.PNG)
 ![image](https://user-images.githubusercontent.com/17108964/175505226-45133ab4-4a98-4c6c-9d82-1b2650db748d.png)
 
+---
+
 ### 3. CZ02_VASI_Portal sharepoint list now contains items
 This list is a datasource for powerapps app. Each item is marked 'Ready' in the designated column.<br>
 Such item is then processed by the Script B
+
+---
 
 ### 4. Script B processes 'Ready' items
 Script B produces output .csv file based on rules defined within configuration
@@ -139,5 +146,7 @@ Script B produces output .csv file based on rules defined within configuration
 Output file is placed in the sharepoint library.<br> 
 ![image](https://github.com/boengrider/work/blob/e01f72bfeb31030a657116df748466467da875ba/vbs/CZ02_VASI/.github/images/sp_dest_library.PNG)
 <br>
+
+---
 
 ### 5. Script C processes files with Upload status 'No'
