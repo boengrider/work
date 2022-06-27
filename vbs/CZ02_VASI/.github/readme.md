@@ -7,7 +7,7 @@ Based on user final decision, data is further processed and script(s) finish by 
 | Script | Name | Description |
 |---|---|---|
 | Script A | ProcessInputUploadToSPList | Input data validation + upload to sharepoint |
-| Script B | ProcessSPListMakeCSV | Data transormation based on configuration (.CSV creation) |
+| Script B | ProcessSPListAndMakeCSV | Data transormation based on configuration (.CSV creation) |
 | Script C | UploadToSAP | Upload of .CSV to SAP (SM35). Verification and info logging |
  
   
