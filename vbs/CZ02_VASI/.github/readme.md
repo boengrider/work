@@ -43,9 +43,9 @@ that presents data to users
 ![image](https://user-images.githubusercontent.com/17108964/175505226-45133ab4-4a98-4c6c-9d82-1b2650db748d.png)
 
 ### 3. CZ02_VASI_Portal sharepoint list now contains items
-This list is a datasource for powerapps app. Each item is marked 'Ready' in the designated column.
+This list is a datasource for powerapps app. Each item is marked 'Ready' in the designated column.<br>
 Such item is then processed by the Script B
 
 ### 4. Script B processes 'Ready' items
 Script B produces output .csv file based on rules defined within configuration
-
+[a relative link](MAKE4ME.conf)
