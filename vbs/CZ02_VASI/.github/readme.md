@@ -143,7 +143,7 @@ Script B produces output .csv file based on rules defined within configuration
 </p>
 </details>
 
-Output file is placed in the sharepoint library.<br> 
+Output file (CZ02_A7_AP-SK01-D_VASI_2d_202206271126.csv) is placed in the sharepoint library.<br> 
 
 <details><summary>Output file (.csv)</summary>
 <p>
