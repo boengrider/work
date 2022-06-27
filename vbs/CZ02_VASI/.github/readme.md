@@ -140,8 +140,7 @@ Script B produces output .csv file based on rules defined within configuration
 </details>
 
 Output file is placed in the sharepoint library.<br> 
-<picture>
-  <img alt="Sharepoint source library" src="images/sp_dest_library.PNG">
-</picture>
+![image](https://github.com/boengrider/work/blob/e01f72bfeb31030a657116df748466467da875ba/vbs/CZ02_VASI/.github/images/sp_dest_library.PNG)
 <br>
 
+### 5. Script C processes files with Upload status 'No'
