@@ -35,11 +35,8 @@ Finally data is placed in the sharepoint list which is a datasource for frontend
 that presents data to users
 
 
-<picture>
-  <img alt="Sharepoint source library" src="images/sp_source_portal1.PNG">
-</picture>
-<br>
 
+![image](https://github.com/boengrider/work/blob/1db9ff043a5e7f420efdaddf4ece15515e22b22d/vbs/CZ02_VASI/.github/images/sp_source_portal1.PNG)
 ![image](https://user-images.githubusercontent.com/17108964/175505226-45133ab4-4a98-4c6c-9d82-1b2650db748d.png)
 
 ### 3. CZ02_VASI_Portal sharepoint list now contains items
