@@ -139,3 +139,9 @@ Script B produces output .csv file based on rules defined within configuration
 </p>
 </details>
 
+Output file is placed in the sharepoint library.<br> 
+<picture>
+  <img alt="Sharepoint source library" src="images/sp_dest_library.PNG">
+</picture>
+<br>
+
