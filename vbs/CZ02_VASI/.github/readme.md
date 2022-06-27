@@ -144,7 +144,7 @@ Script B produces output .csv file based on rules defined within configuration
 </details>
 
 Output file (CZ02_A7_AP-SK01-D_VASI_2d_202206271126.csv) is placed in the sharepoint library.<br> 
-
+<br>
 <details><summary>Output file (.csv)</summary>
 <p>
 
@@ -376,6 +376,9 @@ Output file (CZ02_A7_AP-SK01-D_VASI_2d_202206271126.csv) is placed in the sharep
 
 ![image](https://github.com/boengrider/work/blob/e01f72bfeb31030a657116df748466467da875ba/vbs/CZ02_VASI/.github/images/sp_dest_library.PNG)
 <br>
+<br>
+Report message is sent<br><br>
+![image](https://github.com/boengrider/work/blob/549b148be5b95afdaf3dc1e17b2697ef5c075e88/vbs/CZ02_VASI/.github/images/report_message.PNG)
 
 ---
 
