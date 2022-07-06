@@ -378,7 +378,7 @@ Output file (CZ02_A7_AP-SK01-D_VASI_2d_202206271126.csv) is placed in the sharep
 <br>
 <br>
 Report message is sent<br><br>
-![image](https://github.com/boengrider/work/blob/549b148be5b95afdaf3dc1e17b2697ef5c075e88/vbs/CZ02_VASI/.github/images/report_message.PNG)
+![image](https://github.com/boengrider/work/blob/f04216babc201e204e2bfdbd1ede110a84290f1a/vbs/CZ02_VASI/.github/images/report_message.PNG)
 
 ---
 
