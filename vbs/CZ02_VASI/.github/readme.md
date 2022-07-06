@@ -55,7 +55,7 @@ Script B produces output .csv file based on rules defined within configuration<b
 Work is done by 'Consume()' method<br>
 
 
-![image](https://github.com/boengrider/work/blob/748c2d6cd0101e6e49f448b890631066ee821908/vbs/CZ02_VASI/.github/images/CZ02_VASI_Consume().png)
+![image](https://github.com/boengrider/work/blob/7cd38598eef283038a845d69e86b89b998437d0f/vbs/CZ02_VASI/.github/images/CZ02_VASI_Consume().png)
 
 <br><br>
 <details><summary>Configuration</summary>
