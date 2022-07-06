@@ -51,8 +51,13 @@ Such item is then processed by the Script B
 ---
 
 ### 4. Script B processes 'Ready' items
-Script B produces output .csv file based on rules defined within configuration
+Script B produces output .csv file based on rules defined within configuration<br>
+Work is done by 'Consume()' method<br>
 
+
+![image](https://github.com/boengrider/work/blob/748c2d6cd0101e6e49f448b890631066ee821908/vbs/CZ02_VASI/.github/images/CZ02_VASI_Consume().png)
+
+<br><br>
 <details><summary>Configuration</summary>
 <p>
 
@@ -149,7 +154,7 @@ Output file (CZ02_A7_AP-SK01-D_VASI_2d_202206271126.csv) is placed in the sharep
 <p>
 
 #### 
-
+	
 ```csv
 
 20220905;20220905;CZK;ITE2215349;;4645;;766200-;JM;0,00;;;;;;;;;;C020;;;;BE06;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
