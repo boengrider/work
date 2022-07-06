@@ -109,7 +109,6 @@ Work is done by 'Consume()' method<br>
    </DealerIdMatrix>
 
    <CaseCCP>
-     <DealerIdCC>True</DealerIdCC>
      <TaxAmount>0,00</TaxAmount>
      <TaxCode>JM</TaxCode>
      <GL>799705</GL>
@@ -119,6 +118,8 @@ Work is done by 'Consume()' method<br>
 
    <CaseOUT>
      <AdminCharge>
+	<DealerIdPC>True</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
+        <DealerIdCC>False</DealerIdCC> <!-- If True Then DealerIdPC False and PC Empty -->
         <LineText>VAS1-AdminCharge</LineText>
 	<TaxCode>JM</TaxCode>
         <GL>298606</GL>
@@ -126,6 +127,8 @@ Work is done by 'Consume()' method<br>
         <PC>2001401</PC>
      </AdminCharge>
      <VAS1>
+	<DealerIdPC>True</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
+        <DealerIdCC>False</DealerIdCC> <!-- If True Then DealerIdPC False and PC Empty -->
 	<LineText>VAS1-Recharge</LineText>
      	<TaxCode1>JM</TaxCode1>
 	<TaxCode2>JP</TaxCode2>
@@ -134,11 +137,14 @@ Work is done by 'Consume()' method<br>
         <PC>2001401</PC>
      </VAS1>
      <VAS2>
-        <DealerIdPC>True</DealerIdPC>
+        <DealerIdPC>True</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
+        <DealerIdCC>False</DealerIdCC> <!-- If True Then DealerIdPC False and PC Empty -->
 	<LineText>VAS2-SC_Coverage</LineText>
 	<GL>298602</GL>
         <TaxCode1>JM</TaxCode1>
 	<TaxCode2>JP</TaxCode2>
+	<CC></CC>
+     	<PC></PC>
      </VAS2>
    </CaseOUT>
  </Country>	
