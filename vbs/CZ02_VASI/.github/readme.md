@@ -55,7 +55,7 @@ Script B produces output .csv file based on rules defined within configuration<b
 Work is done by 'Consume()' method<br>
 
 
-![image](https://github.com/boengrider/work/blob/7cd38598eef283038a845d69e86b89b998437d0f/vbs/CZ02_VASI/.github/images/CZ02_VASI_Consume().png)
+![image](https://github.com/boengrider/work/blob/01a11dbe097a4ec35290361334de415492a9357a/vbs/CZ02_VASI/.github/images/CZ02_VASI_Consume()2.png)
 
 <br><br>
 <details><summary>Configuration</summary>
@@ -118,7 +118,7 @@ Work is done by 'Consume()' method<br>
 
    <CaseOUT>
      <AdminCharge>
-	<DealerIdPC>True</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
+	<DealerIdPC>False</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
         <DealerIdCC>False</DealerIdCC> <!-- If True Then DealerIdPC False and PC Empty -->
         <LineText>VAS1-AdminCharge</LineText>
 	<TaxCode>JM</TaxCode>
@@ -127,7 +127,7 @@ Work is done by 'Consume()' method<br>
         <PC>2001401</PC>
      </AdminCharge>
      <VAS1>
-	<DealerIdPC>True</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
+	<DealerIdPC>False</DealerIdPC>  <!-- If True Then DealerIdCC False and CC Empty -->
         <DealerIdCC>False</DealerIdCC> <!-- If True Then DealerIdPC False and PC Empty -->
 	<LineText>VAS1-Recharge</LineText>
      	<TaxCode1>JM</TaxCode1>
@@ -149,6 +149,7 @@ Work is done by 'Consume()' method<br>
    </CaseOUT>
  </Country>	
 </Config>
+
 
 ```
 </p>
