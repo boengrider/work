@@ -394,4 +394,4 @@ Report message is sent<br><br>
 
 ---
 
-### 5. Script C processes files with Upload status 'No'
+### 5. Script C processes files with Upload status 'Queued'
