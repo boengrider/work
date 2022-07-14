@@ -12,6 +12,7 @@ Based on user final decision, data is further processed and script(s) finish by 
  
   
  ---
+ [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/vu-76SnBp18)
  ---
  
  ### Workflow
