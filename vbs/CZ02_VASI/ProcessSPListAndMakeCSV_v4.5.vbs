@@ -8,23 +8,23 @@
 '#####################################################
 '#####################################################
 '#################### Changelog ######################
-'##  27.06.2022										##
-'##  SCCoverage implemented							##
-'##  04.07.2022										##
-'##	 SCCoverage added to all main cases/clauses		##
-'##  06.07.2022 									##
-'##  CC and PC based on configuration implemented	##
-'##  for all conditions except 0 for now			##
-'##  07.07.2022										##
-'##  Fixed TotalAmount and other fields 			##
-'##  in all conditions based on	diagram				##
-'##  08.07.2022										##
-'##  Changed output file creation. Create file		##
-'##  when 1st OK document encountered to prevent	##
-'##  empty output files								##
-'##  12.07.2022									    ##
-'##  Added SharePointLite 4.5. Updates uploaded 	##
-'##  file metadata (load4me -> queued)				##
+'##  27.06.2022					    ##
+'##  SCCoverage implemented			    ##
+'##  04.07.2022					    ##
+'##	 SCCoverage added to all main cases/clauses ##
+'##  06.07.2022 				    ##
+'##  CC and PC based on configuration implemented   ##
+'##  for all conditions except 0 for now            ##
+'##  07.07.2022					    ##
+'##  Fixed TotalAmount and other fields 	    ##
+'##  in all conditions based on	diagram		    ##
+'##  08.07.2022					    ##
+'##  Changed output file creation. Create file	    ##
+'##  when 1st OK document encountered to prevent    ##
+'##  empty output files				    ##
+'##  12.07.2022					    ##
+'##  Added SharePointLite 4.5. Updates uploaded     ##
+'##  file metadata (load4me -> queued)		    ##
 '#####################################################
 Option Explicit
 Const VERSION = "4.5"
@@ -166,7 +166,7 @@ Else 'Initialization OK
 End If
 '************************************************
 '@Load configuration subtree based on country   *
-'and create the workind dir if it doesn't exist *
+'and create the working dir if it doesn't exist *
 '************************************************
 oXMLCONF.load config
 Set oXMLCONF = oXMLCONF.selectNodes("//Country[@name=""" & country & """]").item(0)
@@ -218,8 +218,9 @@ If oMyItems.CCPCount + oMyItems.OUTCount > 0 Then
 		If vasiItems.Item(itemNode).IsOK Then
 			If Not bOutFileCreated Then
 				Set oOutFile = oFSO.OpenTextFile(oXMLCONF.selectSingleNode("//WorkingDirectory").text & outFile, 2, True)
+				bOutFileCreatd = True
 			End If 
-			f.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
+			oOutFile.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
 		End If 
 	Next
 	
@@ -228,6 +229,7 @@ If oMyItems.CCPCount + oMyItems.OUTCount > 0 Then
 		If vasiItems.Item(itemNode).IsOK Then
 			If Not bOutFileCreated Then
 				Set oOutFile = oFSO.OpenTextFile(oXMLCONF.selectSingleNode("//WorkingDirectory").text & outFile, 2, True)
+				bOutFileCreated = True
 			End If 
 			oOutFile.Write vasiItems.Item(itemNode).GetHeader & vasiItems.Item(itemNode).GetLineItems
 		End If 
@@ -236,10 +238,6 @@ If oMyItems.CCPCount + oMyItems.OUTCount > 0 Then
 	oOutFile.Close
 End If
 
-
-'DEBUG
-'WScript.Quit
-'DEBUG
 
 '**********************
 '@Update list items & *
